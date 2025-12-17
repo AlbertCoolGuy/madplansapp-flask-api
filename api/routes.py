@@ -27,6 +27,21 @@ def register_routes(app):
     def health():
         return json_response({"status": "ok"})
 
+    @app.get("/api/recipes")
+    def get_recipes_by_ingredient():
+        ingredient = request.args.get("ingredient")
+        if not ingredient:
+            return json_response({"error": "ingredient query parameter is required"}, status=400)
+        
+        url = f"https://www.themealdb.com/api/json/v1/1/filter.php?i={ingredient}"
+        response = requests.get(url)
+        if response.status_code != 200:
+            return json_response({"error": "failed to fetch from mealdb"}, status=500)
+        
+        data = response.json()
+        meals = data.get("meals") or []
+        return json_response({"meals": meals})
+
     @app.get("/api/recipes/details")
     def get_recipe_details():
         recipe_id = request.args.get("recipe_id")
@@ -76,4 +91,4 @@ def register_routes(app):
             "ingredients": ingredients
         }
 
-        return json_response({"meal": recipe_output})
+        return json_response({"meal": recipe_output})        return json_response({"meal": recipe_output})
