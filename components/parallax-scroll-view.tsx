@@ -1,64 +1,34 @@
-import type { PropsWithChildren, ReactElement } from 'react';
-import { StyleSheet } from 'react-native';
-import Animated, {
-  interpolate,
-  useAnimatedRef,
-  useAnimatedStyle,
-  useScrollOffset,
-} from 'react-native-reanimated';
+import { BlurView } from 'expo-blur';
+import type { PropsWithChildren } from 'react';
+import { ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
-import { ThemedView } from '@/components/themed-view';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useThemeColor } from '@/hooks/use-theme-color';
 
-const HEADER_HEIGHT = 250;
+
+const HEADER_HEIGHT = 100; // Increased from 50 to 250 to show the image
 
 type Props = PropsWithChildren<{
-  headerImage: ReactElement;
+  overskrift: string;
   headerBackgroundColor: { dark: string; light: string };
 }>;
 
 export default function ParallaxScrollView({
   children,
-  headerImage,
-  headerBackgroundColor,
+  overskrift,
 }: Props) {
-  const backgroundColor = useThemeColor({}, 'background');
   const colorScheme = useColorScheme() ?? 'light';
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollOffset(scrollRef);
-  const headerAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: interpolate(
-            scrollOffset.value,
-            [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
-            [-HEADER_HEIGHT / 2, 0, HEADER_HEIGHT * 0.75]
-          ),
-        },
-        {
-          scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
-        },
-      ],
-    };
-  });
-
   return (
-    <Animated.ScrollView
-      ref={scrollRef}
-      style={{ backgroundColor, flex: 1 }}
-      scrollEventThrottle={16}>
-      <Animated.View
-        style={[
-          styles.header,
-          { backgroundColor: headerBackgroundColor[colorScheme] },
-          headerAnimatedStyle,
-        ]}>
-        {headerImage}
-      </Animated.View>
-      <ThemedView style={styles.content}>{children}</ThemedView>
-    </Animated.ScrollView>
+    <View style={styles.container}>
+      <BlurView intensity={80} tint="light" style={styles.header}>
+          <Text className='text-3xl shadow-xs font-bold text-blue-500'>
+              {overskrift}
+          </Text>
+      </BlurView>
+      <ScrollView contentContainerStyle={{paddingTop: HEADER_HEIGHT}}>
+        <View style={styles.content}>
+          {children}  
+        </View>  
+      </ScrollView>
+    </View>
   );
 }
 
@@ -67,13 +37,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: HEADER_HEIGHT,
+    height: HEADER_HEIGHT + 50,
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
     overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
   },
   content: {
     flex: 1,
-    padding: 32,
-    gap: 16,
+
     overflow: 'hidden',
   },
 });
