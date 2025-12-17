@@ -1,39 +1,51 @@
-import { StyleSheet, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 
+// Sample data for recommended dishes
+const anbefaledaRetter = [
+  { id: '1', name: 'Lasagne', ingredients: ['Pasta', 'Kødsauce', 'Ost'] },
+  { id: '2', name: 'Spaghetti Carbonara', ingredients: ['Pasta', 'Bacon', 'Æg'] },
+  { id: '3', name: 'Kylling i karry', ingredients: ['Kylling', 'Karry', 'Ris'] },
+  { id: '4', name: 'Frikadeller', ingredients: ['Hakket svinekød', 'Løg', 'Æg'] },
+  { id: '5', name: 'Tacos', ingredients: ['Tortilla', 'Hakket oksekød', 'Salat'] },
+];
+
+// Store options
+const stores = ['Rema', 'Føtex', 'Netto'];
 
 export default function HomeScreen() {
+  const [selectedStore, setSelectedStore] = useState('Rema');
+
+  const renderRetItem = ({ item }: { item: typeof anbefaledaRetter[0] }) => (
+    <TouchableOpacity className="bg-white p-4 rounded-xl mb-3 shadow-sm">
+      <Text className="text-base font-semibold text-gray-800 mb-1">{item.name}</Text>
+      <Text className="text-sm text-gray-500">{item.ingredients.join(', ')}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <ParallaxScrollView
-    headerBackgroundColor={{ light: '#1f6479ff', dark: '#1D3D47' }}
-    overskrift='Hjem'
+      headerBackgroundColor={{ light: '#1f6479', dark: '#1D3D47' }}
+      overskrift="Hjem"
+      headerRight={
+        <TouchableOpacity className="w-11 h-11 rounded-full bg-white/20 justify-center items-center">
+          <Ionicons name="add" size={28} color="#fff" />
+        </TouchableOpacity>
+      }
     >
-      <Text style={{ fontSize: 32, fontWeight: 'bold', textAlign: 'center'}}>
-Hvad fanden sagde du lige om mig, dit helvedes horeyngel? Jeg skal lade dig vide, at jeg dimitterede fra min klasse i frømandskorpset med allerhøjeste anmærkning, og at jeg har deltaget i adskillige hemmelige togter mod Sverige og har over 300 bekræftede drab. Jeg er uddannet i gorillakrigsførelse, og jeg er den bedste snigskytte i hele forsvaret. For mit vedkommende er du blot endnu en skydeskive. Jeg skal blæse hovedet af dig med en nøjagtighed, hvis lige aldrig før er set på denne jord, mærk dig mine satans ord. Tror du, at du kan slippe af sted med at sige sådan noget pis til mig på internettet? Så tro om, spasser. I skrivende stund kontakter jeg mit hemmelige spionnetværk rundt over hele Danmark, og din IP bliver sporet i dette øjeblik, så du må hellere berede dig på stormen, kryb. Stormen, som fuldstændigt tilintetgør den sølle lille sag, du kalder et liv. Du er fandeme død, knægt. Jeg kan være hvor som helst når som helst, og jeg kan dræbe dig på over syvhundrede måder, og det er kun med mine bare næver. Ikke nok med at jeg er udførligt trænet i ubevæbnet nærkamp, jeg har også ubegrænset adgang til søværnets våbenlager, og jeg vil bruge det i dets fulde omfang til at vaske din sørgelige røv bort fra jordens overflade, din lille lort. Hvis bare du på forhånd kunne have vidst, hvilken ugudelig hævn din "vittige" lille bemærkning ville forvolde dig, havde du måske holdt din forpulede kæft. Men det kunne du ikke, det gjorde du ikke, og nu skal du bøde, dit forbandede fjols. Jeg vil skide rent og skært raseri ud over dig, og du skal drukne i det. Du er kraftedeme død, knøs.
 
-
-
-      </Text> 
+      <View className="p-4">
+        <Text className="text-xl font-bold text-gray-800 mb-4">Anbefalede retter</Text>
+        <FlatList
+          data={anbefaledaRetter}
+          renderItem={renderRetItem}
+          keyExtractor={(item) => item.id}
+          scrollEnabled={false}
+        />
+      </View>
     </ParallaxScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
