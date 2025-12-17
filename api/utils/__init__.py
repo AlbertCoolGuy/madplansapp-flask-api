@@ -1,0 +1,1 @@
+from .translator import translate_recipe_to_danish
