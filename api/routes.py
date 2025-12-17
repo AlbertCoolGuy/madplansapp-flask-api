@@ -91,4 +91,4 @@ def register_routes(app):
             "ingredients": ingredients
         }
 
-        return json_response({"meal": recipe_output})        return json_response({"meal": recipe_output})
+        return json_response({"meal": recipe_output})
